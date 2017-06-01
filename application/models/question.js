@@ -32,7 +32,21 @@ const question = {
         choices: {
             type: 'array',
             items: {
-              type: 'string'
+                type: 'object',
+                properties: {
+                    _id: {
+                        type: 'number'
+                    },
+                    choice: {
+                        type: 'string'
+                    },
+                    is_correct: {
+                        type: 'boolean' //TODO check lowercase
+                    },
+                    explanation: {
+                        type: 'string'
+                    }
+                }
             }
         },
         difficulty: {
