@@ -47,6 +47,9 @@ module.exports = function(server) {
     handler: handlers.newQuestion,
     config: {
       validate: {
+        params: {
+          related_object: Joi.string().valid(['slide','deck']),
+        },
         payload: Joi.object().keys({
           related_object: Joi.string().valid(['slide','deck']),
           related_object_id: Joi.string().alphanum(),
@@ -72,7 +75,7 @@ module.exports = function(server) {
           id: Joi.string().alphanum().lowercase()
         },
         payload: Joi.object().keys({
-          related_object: Joi.string(),
+          related_object: Joi.string().valid(['slide','deck']),
           related_object_id: Joi.string().alphanum(),
           question: Joi.string(),
           user_id: Joi.string().alphanum().lowercase(),
@@ -85,15 +88,16 @@ module.exports = function(server) {
     }
   });
 
-  //Get all questions of Deck with id deckid and return it (...).
+  //Get all questions of Deck or Slide with its id and return it (...).
   server.route({
     method: 'GET',
-    path: '/deck/{deckid}/questions',
+    path: '/{related_object}/deck/{id}/questions',
     handler: handlers.getDeckQuestions,
     config: {
       validate: {
         params: {
-          deckid: Joi.string().description('Identifier of deck in the form: deckId-deckRevisionId')
+          id: Joi.string().alphanum().lowercase()
+          related_object: Joi.string().valid(['slide','deck']),
         }
       },
       tags: ['api'],
@@ -101,21 +105,6 @@ module.exports = function(server) {
     }
   });
 
-  //Get all questions of Deck with id deckid and return it (...).
-  server.route({
-    method: 'GET',
-    path: '/slide/{slideid}/questions',
-    handler: handlers.getDeckQuestions,
-    config: {
-      validate: {
-        params: {
-          slideid: Joi.string()
-        }
-      },
-      tags: ['api'],
-      description: 'Get all the questions of a slide with Id deck-id'
-    }
-  });
 
   //Delete a question with id id and return it (...).
   server.route({
