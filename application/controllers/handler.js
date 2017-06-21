@@ -36,6 +36,22 @@ module.exports = {
     });
   },
 
+  //Get a question from database or return NOT FOUND 
+  getRelatedQuestions: function(request, reply) {
+    questionDB.getAllRelated(request.params.related_object,
+                            request.params.related_object_id
+                            ).then((questions) => {
+      if (co.isEmpty(question))
+        reply(boom.notFound());
+      else
+        reply(co.rewriteID(question));
+    }).catch((error) => {
+      request.log('error', error);
+      reply(boom.badImplementation());
+    });
+  },
+
+
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   newQuestion: function(request, reply) {
     questionDB.insert(request.payload).then((inserted) => {
@@ -63,5 +79,18 @@ module.exports = {
             reply(boom.badImplementation());
         });
     },
+
+  //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
+  deleteQuestion: function(request, reply) {
+    questionDB.remove(request.params.id).then((deleted) => {
+      if (co.isEmpty(deleted))
+        reply(co.rewriteID(deleted));
+      else
+        reply(boom.notFound());
+    }).catch((error) => {
+      request.log('error', error);
+      reply(boom.badImplementation());
+    });
+  },
 
 };

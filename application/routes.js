@@ -91,13 +91,13 @@ module.exports = function(server) {
   //Get all questions of Deck or Slide with its id and return it (...).
   server.route({
     method: 'GET',
-    path: '/{related_object}/deck/{id}/questions',
-    handler: handlers.getDeckQuestions,
+    path: '/{related_object}/{related_object_id}/questions',
+    handler: handlers.getRelatedQuestions,
     config: {
       validate: {
         params: {
-          id: Joi.string().alphanum().lowercase()
           related_object: Joi.string().valid(['slide','deck']),
+          related_object_id: Joi.string().alphanum(),
         }
       },
       tags: ['api'],

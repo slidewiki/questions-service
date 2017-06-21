@@ -20,10 +20,27 @@ module.exports = {
       }));
   },
 
+  remove: function (identifier) {
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.remove({
+        _id: identifier
+      }));
+  },
+
   getAll: function (identifier) {
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))
       .then((col) => col.find());
+  },
+
+  getAllRelated: function (relObject, relObjectId) {
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.find({
+        related_object: relObject,
+        related_object_id: objectId
+      }));
   },
 
   insert: function (question) {
