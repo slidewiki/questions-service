@@ -11,12 +11,19 @@ const helper = require('./helper'),
   questionModel = require('../models/question.js');
 
 module.exports = {
+
   get: function (identifier) {
     return helper.connectToDatabase()
-      .then((db) => db.collection('quesions'))
+      .then((db) => db.collection('questions'))
       .then((col) => col.findOne({
         _id: identifier
       }));
+  },
+
+  getAll: function (identifier) {
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.find());
   },
 
   insert: function (question) {
