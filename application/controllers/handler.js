@@ -13,14 +13,19 @@ module.exports = {
   //Get all questions from database or return NOT FOUND if the collection is empty 
   getAllQuestions: function(request, reply) {
     questionDB.getAll().then((questions) => {
-      if (co.isEmpty(questions))
-        reply(boom.notFound());
-      else
-        reply(co.rewriteID(questions));
+
+      questions.forEach((question) => {
+        co.rewriteID(question);
+      });
+
+      let jsonReply = JSON.stringify(questions);
+      reply(jsonReply);
+
     }).catch((error) => {
       request.log('error', error);
       reply(boom.badImplementation());
     });
+
   },
 
   //Get a question from database or return NOT FOUND 
