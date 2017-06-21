@@ -43,12 +43,12 @@ module.exports = function(server) {
   //Create new question (by payload) and return it (...). Validate payload
   server.route({
     method: 'POST',
-    path: '/question',
+    path: '/{related_object}/question',
     handler: handlers.newQuestion,
     config: {
       validate: {
         payload: Joi.object().keys({
-          related_object: Joi.string(),
+          related_object: Joi.string().valid(['slide','deck']),
           related_object_id: Joi.string().alphanum(),
           question: Joi.string(),
           user_id: Joi.string().alphanum().lowercase(),
