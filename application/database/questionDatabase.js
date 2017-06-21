@@ -32,7 +32,6 @@ module.exports = {
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))
       .then((col) => col.find())
-      .then((stream) => stream.sort({timestamp: -1}))
       .then((stream) => stream.toArray());
   },
 
