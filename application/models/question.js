@@ -21,7 +21,7 @@ const question = {
       type: 'string'
     },
     related_object_id: {   // id of the related object
-      type: 'number'
+      type: 'string'
     },
     question: {
       type: 'string'

@@ -59,7 +59,7 @@ module.exports = {
 
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   newQuestion: function(request, reply) {
-    questionDB.insert(request.payload).then((inserted) => {
+    questionDB.insert(Object.assign({"related_object":request.params.related_object},request.payload)).then((inserted) => {
       if (co.isEmpty(inserted))
         throw inserted;
       else

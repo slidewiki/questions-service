@@ -62,8 +62,7 @@ module.exports = function(server) {
           related_object: Joi.string().valid(['slide','deck']),
         },
         payload: Joi.object().keys({
-          related_object: Joi.string().valid(['slide','deck']),
-          related_object_id: Joi.string().alphanum(),
+          related_object_id: Joi.string().alphanum().lowercase(),
           question: Joi.string(),
           user_id: Joi.string().alphanum().lowercase(),
           difficulty: Joi.number().integer().min(1).max(5),
@@ -131,7 +130,7 @@ module.exports = function(server) {
         }
       },
       tags: ['api'],
-      description: 'Delete a question by id'
+      description: 'Delete a question by its id'
     }
   });
 };
