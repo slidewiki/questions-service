@@ -22,30 +22,39 @@ describe('REST API', () => {
     done();
   });
 
-  let slide = {
-    title: 'Dummy',
-    body: 'dummy',
-    language: 'en'
+  let question = {
+    "related_object": "slide",
+    "related_object_id": "dummy",
+    "question": "dummy",
+    "user_id": "dummy",
+    "difficulty": 1,
+    "choices": [
+      "dummy",
+      "dummy",
+      "dummy",
+      "dummy"
+    ]
   };
   let options = {
     method: 'POST',
-    url: '/slide/new',
-    payload: slide,
+    url: '/slide/question',
+    payload: question,
     headers: {
       'Content-Type': 'application/json'
     }
   };
 
-  context('when creating a slide it', () => {
+  context('when creating a question it', () => {
     it('should reply it', (done) => {
       server.inject(options, (response) => {
         response.should.be.an('object').and.contain.keys('statusCode','payload');
         response.statusCode.should.equal(200);
         response.payload.should.be.a('string');
         let payload = JSON.parse(response.payload);
-        payload.should.be.an('object').and.contain.keys('title', 'language');
-        payload.title.should.equal('Dummy');
-        payload.language.should.equal('en');
+        payload.should.be.an('object').and.contain.keys('related_object','related_object_id','question');
+        payload.related_object.should.equal('slide');
+        payload.related_object_id.should.equal('dummy');
+        payload.question.should.equal('dummy');
         done();
       });
     });
