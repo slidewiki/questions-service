@@ -44,8 +44,8 @@ module.exports = {
   //Get a question from database or return NOT FOUND 
   getRelatedQuestions: function(request, reply) {
     questionDB.getAllRelated(request.params.related_object,
-                            request.params.related_object_id
-                            ).then((questions) => {
+      request.params.related_object_id
+    ).then((questions) => {
       if (co.isEmpty(question))
         reply(boom.notFound());
       else
@@ -70,20 +70,20 @@ module.exports = {
     });
   },
 
-    // replace an existing question
-    replaceQuestion: function(request, reply) {
-        questionDB.replace(request.params.id, request.payload).then((replaced) => {
-            if (co.isEmpty(replaced.value)){
-                reply(boom.notFound());
-            }
-            else{
-                reply(co.rewriteID(replaced.value));
-            }
-        }).catch((error) => {
-            request.log('error', error);
-            reply(boom.badImplementation());
-        });
-    },
+  // replace an existing question
+  replaceQuestion: function(request, reply) {
+    questionDB.replace(request.params.id, request.payload).then((replaced) => {
+      if (co.isEmpty(replaced.value)){
+        reply(boom.notFound());
+      }
+      else{
+        reply(co.rewriteID(replaced.value));
+      }
+    }).catch((error) => {
+      request.log('error', error);
+      reply(boom.badImplementation());
+    });
+  },
 
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   deleteQuestion: function(request, reply) {
