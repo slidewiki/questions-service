@@ -29,6 +29,9 @@ const question = {
     user_id: {
       type: 'string' //TODO check lowercase
     },
+    explanation: {
+      type: 'string'
+    },
     choices: {
       type: 'array',
       items: {
@@ -42,9 +45,6 @@ const question = {
           },
           is_correct: {
             type: 'boolean' //TODO check lowercase
-          },
-          explanation: {
-            type: 'string'
           }
         }
       }

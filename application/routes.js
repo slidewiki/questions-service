@@ -7,6 +7,17 @@ Each route implementes a basic parameter/payload validation and a swagger API do
 const Joi = require('joi'),
   handlers = require('./controllers/handler');
 
+const DEFAULT_OPTIONS = {
+  abortEarly: false,
+  stripUnknown: { objects: true }
+};
+
+const choiceSchema =
+  Joi.object({
+    choice: Joi.string().min(1).required(),
+    is_correct: Joi.boolean().required()
+  });
+
 module.exports = function(server) {
 
   //Get all the questions
@@ -56,8 +67,9 @@ module.exports = function(server) {
           question: Joi.string(),
           user_id: Joi.string().alphanum().lowercase(),
           difficulty: Joi.number().integer().min(1).max(5),
-          choices: Joi.array().min(0).max(4)
-        }).requiredKeys('related_object', 'related_object_id', 'question', 'user_id', 'choices'),
+          explanation: Joi.string(),
+          choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
+        }).requiredKeys('related_object_id', 'question', 'user_id', 'choices'),
       },
       tags: ['api'],
       description: 'Create a new question'
@@ -80,7 +92,8 @@ module.exports = function(server) {
           question: Joi.string(),
           user_id: Joi.string().alphanum().lowercase(),
           difficulty: Joi.number().integer().min(1).max(5),
-          choices: Joi.array().min(0).max(4)
+          explanation: Joi.string(),
+          choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
         }).requiredKeys('related_object', 'related_object_id', 'question', 'user_id', 'choices'),
       },
       tags: ['api'],
