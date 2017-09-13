@@ -12,4 +12,4 @@ questionservice:
     - VIRTUAL_HOST=questionservice.experimental.slidewiki.org
     - LETSENCRYPT_HOST=questionservice.experimental.slidewiki.org
     - LETSENCRYPT_EMAIL=pbaptist@uni-bonn.de
-    - LETSENCRYPT_TEST=true
+    - LETSENCRYPT_TEST=false
