@@ -5,6 +5,8 @@
 
 describe('Database', () => {
 
+  done();
+
   let db, helper; //expect
 
   before((done) => {

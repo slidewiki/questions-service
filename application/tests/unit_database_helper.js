@@ -4,6 +4,8 @@
 //Mocking is missing completely TODO add mocked objects
 
 describe('Database', () => {
+
+  done();
   let helper, tempDatabase = 'AwesomeMoo3000';
 
   //get modules

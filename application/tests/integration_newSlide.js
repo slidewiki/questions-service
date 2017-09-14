@@ -5,6 +5,7 @@
 
 describe('REST API', () => {
 
+  done();
   let server;
 
   beforeEach((done) => {
