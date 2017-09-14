@@ -1,13 +1,13 @@
 {
-  "name": "template_application",
+  "name": "questions-service",
   "version": "0.1.0",
-  "description": "This is a Microservice template appication, meant to be forked.",
+  "description": "This service handles question and exams used in slidewiki.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/slidewiki/Microservice-Template"
+    "url": "https://github.com/slidewiki/questions-service"
   },
-  "bugs": "https://github.com/slidewiki/Microservice-Template/issues",
-  "author": "Roy Meissner (https://rmeissn.github.io/)",
+  "bugs": "https://github.com/slidewiki/questions-service/issues",
+  "author": "Several peopl (https://SlideWiki.github.io/)",
   "license": "MPL-2.0",
   "main": "server.js",
   "scripts": {
