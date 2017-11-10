@@ -45,7 +45,7 @@ module.exports = {
   getRelatedQuestions: function(request, reply) {
     questionDB.getAllRelated(request.params.related_object,
       request.params.related_object_id
-    ).then((questions) => {
+    ).then((question) => {
       if (co.isEmpty(question))
         reply(boom.notFound());
       else
@@ -59,7 +59,7 @@ module.exports = {
 
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   newQuestion: function(request, reply) {
-    questionDB.insert(Object.assign({"related_object":request.params.related_object},request.payload)).then((inserted) => {
+    questionDB.insert(Object.assign({'related_object':request.params.related_object},request.payload)).then((inserted) => {
       if (co.isEmpty(inserted))
         throw inserted;
       else
