@@ -1,4 +1,5 @@
 // example unit tests
+/* eslint promise/no-callback-in-promise: "off" */
 'use strict';
 
 //Mocking is missing completely TODO add mocked objects
