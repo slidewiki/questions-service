@@ -40,7 +40,7 @@ module.exports = {
       .then((db) => db.collection('questions'))
       .then((col) => col.find({
         related_object: relObject,
-        related_object_id: objectId
+        related_object_id: relObjectId
       }));
   },
 
