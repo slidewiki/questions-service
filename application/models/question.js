@@ -12,9 +12,9 @@ let ajv = Ajv({
 
 //build schema
 const objectid = {
-    type: 'string',
-    maxLength: 24,
-    minLength: 1
+  type: 'string',
+  maxLength: 24,
+  minLength: 1
 };
 
 const question = {

@@ -5,8 +5,7 @@ Each route implementes a basic parameter/payload validation and a swagger API do
 'use strict';
 
 const Joi = require('joi'),
-  handlers = require('./controllers/handler')
-  Joi.objectId = require('joi-objectid')(Joi);
+  handlers = require('./controllers/handler');
 
 const DEFAULT_OPTIONS = {
   abortEarly: false,
