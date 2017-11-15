@@ -31,7 +31,7 @@ module.exports = {
 
   //Get a question from database or return NOT FOUND 
   getQuestion: function(request, reply) {
-    questionDB.get(request.params.id).then((question) => {
+    questionDB.get(Number(request.params.id)).then((question) => {
       if (co.isEmpty(question))
         reply(boom.notFound());
       else
@@ -73,12 +73,13 @@ module.exports = {
 
   // replace an existing question
   replaceQuestion: function(request, reply) {
-    questionDB.replace(request.params.id, request.payload).then((replaced) => {
-      if (co.isEmpty(replaced.value)){
+    questionDB.replace(Number(request.params.id), request.payload).then((replaced) => {
+      if (co.isEmpty(replaced)){
         reply(boom.notFound());
+        throw replaced;
       }
       else{
-        reply(co.rewriteID(replaced.value));
+        reply(co.rewriteID(replaced));
       }
     }).catch((error) => {
       request.log('error', error);
@@ -86,17 +87,20 @@ module.exports = {
     });
   },
 
-  //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
+  //Delete Question using an id or return INTERNAL_SERVER_ERROR
   deleteQuestion: function(request, reply) {
-    questionDB.remove(request.params.id).then((deleted) => {
-      if (co.isEmpty(deleted))
-        reply(co.rewriteID(deleted));
-      else
+    questionDB.get(Number(request.params.id)).then((question) => {
+      if (co.isEmpty(question))
         reply(boom.notFound());
-    }).catch((error) => {
-      request.log('error', error);
-      reply(boom.badImplementation());
+      else
+        return Number(request.params.id);
+    }).then((delete_id) => {
+      questionDB.remove(delete_id).then((deleted) => {
+        reply(co.rewriteID(deleted));
+      }).catch((error) => {
+        request.log('error', error);
+        reply(boom.badImplementation());
+      });
     });
   },
-
 };

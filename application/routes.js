@@ -43,7 +43,9 @@ module.exports = function(server) {
     config: {
       validate: {
         params: {
-          id: Joi.number()
+          id: Joi.string().regex(/^\d+$/)
+          // id: Joi.string().alphanum().min(1).max(24)
+          // id: Joi.number().integer()
         },
       },
       tags: ['api'],
@@ -62,9 +64,9 @@ module.exports = function(server) {
           related_object: Joi.string().valid(['slide','deck']),
         },
         payload: Joi.object().keys({
-          related_object_id: Joi.string().alphanum().lowercase(),
+          related_object_id: Joi.string().alphanum().min(1).max(24),
           question: Joi.string(),
-          user_id: Joi.string().alphanum().lowercase(),
+          user_id: Joi.string().alphanum().min(1).max(24),
           difficulty: Joi.number().integer().min(1).max(5),
           explanation: Joi.string(),
           choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
@@ -83,13 +85,13 @@ module.exports = function(server) {
     config: {
       validate: {
         params: {
-          id: Joi.string().alphanum().lowercase()
+          id: Joi.string().regex(/^\d+$/)
         },
         payload: Joi.object().keys({
           related_object: Joi.string().valid(['slide','deck']),
-          related_object_id: Joi.string().alphanum(),
+          related_object_id: Joi.string().alphanum().min(1).max(24),
           question: Joi.string(),
-          user_id: Joi.string().alphanum().lowercase(),
+          user_id: Joi.string().alphanum().min(1).max(24),
           difficulty: Joi.number().integer().min(1).max(5),
           explanation: Joi.string(),
           choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
@@ -109,7 +111,7 @@ module.exports = function(server) {
       validate: {
         params: {
           related_object: Joi.string().valid(['slide','deck']),
-          related_object_id: Joi.string().alphanum(),
+          related_object_id: Joi.string().alphanum().min(1).max(24),
         }
       },
       tags: ['api'],
@@ -126,7 +128,8 @@ module.exports = function(server) {
     config: {
       validate: {
         params: {
-          id: Joi.string().alphanum().lowercase()
+          // id: Joi.string().alphanum().min(1).max(24)
+          id: Joi.string().regex(/^\d+$/)
         }
       },
       tags: ['api'],
