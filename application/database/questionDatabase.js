@@ -76,6 +76,7 @@ module.exports = {
       .then((col) => {
         let valid = false;
         try {
+          question._id = id;
           valid = questionModel(question);
           if (!valid) {
             return questionModel.errors;

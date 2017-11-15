@@ -11,18 +11,25 @@ let ajv = Ajv({
 }); // options can be passed, e.g. {allErrors: true}
 
 //build schema
+const objectid = {
+    type: 'string',
+    maxLength: 24,
+    minLength: 1
+};
+
 const question = {
   type: 'object',
   properties: {
+
     _id: {
-      type: 'number'
+      type: 'integer',
+      maxLength: 24,
+      minLength: 1
     },
     related_object: {   // "deck" / "slide" / ... (?)
       type: 'string'
     },
-    related_object_id: {   // id of the related object
-      type: 'string'
-    },
+    related_object_id: objectid,
     question: {
       type: 'string'
     },
@@ -37,9 +44,7 @@ const question = {
       items: {
         type: 'object',
         properties: {
-          _id: {
-            type: 'number'
-          },
+          _id: objectid,
           choice: {
             type: 'string'
           },
