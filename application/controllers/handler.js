@@ -11,7 +11,7 @@ const boom = require('boom'), //Boom gives us some predefined http codes and pro
 
 module.exports = {
 
-  //Get all questions from database or return NOT FOUND if the collection is empty 
+  //Get all questions from database or return NOT FOUND if the collection is empty
   getAllQuestions: function(request, reply) {
     questionDB.getAll().then((questions) => {
 
@@ -29,7 +29,7 @@ module.exports = {
 
   },
 
-  //Get a question from database or return NOT FOUND 
+  //Get a question from database or return NOT FOUND
   getQuestion: function(request, reply) {
     questionDB.get(Number(request.params.id)).then((question) => {
       if (co.isEmpty(question))
@@ -42,15 +42,17 @@ module.exports = {
     });
   },
 
-  //Get a question from database or return NOT FOUND 
+  //Get all questions from database for a deck/slide or return NOT FOUND
   getRelatedQuestions: function(request, reply) {
     questionDB.getAllRelated(request.params.related_object,
       request.params.related_object_id
-    ).then((question) => {
-      if (co.isEmpty(question))
-        reply(boom.notFound());
-      else
-        reply(co.rewriteID(question));
+    ).then((questions) => {
+      questions.forEach((question) => {
+        co.rewriteID(question);
+      });
+
+      let jsonReply = JSON.stringify(questions);
+      reply(jsonReply);
     }).catch((error) => {
       request.log('error', error);
       reply(boom.badImplementation());
@@ -101,6 +103,9 @@ module.exports = {
         request.log('error', error);
         reply(boom.badImplementation());
       });
+    }).catch((error) => {
+      request.log('error', error);
+      reply(boom.badImplementation());
     });
   },
 };

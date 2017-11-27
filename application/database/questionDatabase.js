@@ -41,7 +41,8 @@ module.exports = {
       .then((col) => col.find({
         related_object: relObject,
         related_object_id: relObjectId
-      }));
+      }))
+      .then((stream) => stream.toArray());
   },
 
   insert: function (question) {
