@@ -63,10 +63,10 @@ module.exports = {
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   newQuestion: function(request, reply) {
     questionDB.insert(Object.assign({'related_object':request.params.related_object},request.payload)).then((inserted) => {
-      if (co.isEmpty(inserted))
+      if (co.isEmpty(inserted) || co.isEmpty(inserted.ops[0]))
         throw inserted;
       else
-        reply(co.rewriteID(inserted));
+        reply(co.rewriteID(inserted.ops[0]));
     }).catch((error) => {
       request.log('error', error);
       reply(boom.badImplementation());
@@ -81,7 +81,7 @@ module.exports = {
         throw replaced;
       }
       else{
-        reply(co.rewriteID(replaced));
+        reply(co.rewriteID(replaced.value));
       }
     }).catch((error) => {
       request.log('error', error);
