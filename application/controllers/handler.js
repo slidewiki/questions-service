@@ -44,21 +44,32 @@ module.exports = {
 
   //Get all questions from database for a deck/slide or return NOT FOUND
   getRelatedQuestions: function(request, reply) {
-    questionDB.getAllRelated(request.params.related_object,
-      request.params.related_object_id
-    ).then((questions) => {
-      questions.forEach((question) => {
-        co.rewriteID(question);
+    const metaonly = request.query.metaonly;
+    if (metaonly === 'true') {
+      return questionDB.getCountOfAllRelated(request.params.related_object,
+        request.params.related_object_id
+      ).then((count) => {
+        reply ({count: count});
+      }).catch((error) => {
+        tryRequestLog(request, 'error', error);
+        reply(boom.badImplementation());
       });
+    } else {
+      return questionDB.getAllRelated(request.params.related_object,
+        request.params.related_object_id
+      ).then((questions) => {
+        questions.forEach((question) => {
+          co.rewriteID(question);
+        });
 
-      let jsonReply = JSON.stringify(questions);
-      reply(jsonReply);
-    }).catch((error) => {
-      request.log('error', error);
-      reply(boom.badImplementation());
-    });
+        let jsonReply = JSON.stringify(questions);
+        reply(jsonReply);
+      }).catch((error) => {
+        request.log('error', error);
+        reply(boom.badImplementation());
+      });
+    }
   },
-
 
   //Create Question with new id and payload or return INTERNAL_SERVER_ERROR
   newQuestion: function(request, reply) {
@@ -107,5 +118,15 @@ module.exports = {
       request.log('error', error);
       reply(boom.badImplementation());
     });
-  },
+  }
 };
+
+
+//This function tries to use request log and uses console.log if this doesnt work - this is the case in unit tests
+function tryRequestLog(request, message, _object) {
+  try {
+    request.log(message, _object);
+  } catch (e) {
+    console.log(message, _object);
+  }
+}

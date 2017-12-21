@@ -45,6 +45,15 @@ module.exports = {
       .then((stream) => stream.toArray());
   },
 
+  getCountOfAllRelated: function(relObject, relObjectId) {
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.count({
+        related_object: relObject,
+        related_object_id: relObjectId
+      }));
+  },
+
   insert: function (question) {
     //TODO check for root and parent deck ids to be existent, otherwise create these
     return helper.connectToDatabase()

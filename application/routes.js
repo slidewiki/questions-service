@@ -112,6 +112,9 @@ module.exports = function(server) {
         params: {
           related_object: Joi.string().valid(['slide','deck']),
           related_object_id: Joi.string().alphanum().min(1).max(24),
+        },
+        query: {
+          metaonly: Joi.string().description('Set to true to return only metadata without the list of questions')
         }
       },
       tags: ['api'],
