@@ -93,7 +93,7 @@ module.exports = function(server) {
           question: Joi.string(),
           user_id: Joi.string().alphanum().min(1).max(24),
           difficulty: Joi.number().integer().min(1).max(5),
-          explanation: Joi.string(),
+          explanation: Joi.string().allow(''),
           choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
         }).requiredKeys('related_object', 'related_object_id', 'question', 'user_id', 'choices'),
       },
