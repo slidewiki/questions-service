@@ -111,10 +111,11 @@ module.exports = function(server) {
       validate: {
         params: {
           related_object: Joi.string().valid(['slide','deck']),
-          related_object_id: Joi.string().alphanum().min(1).max(24),
+          related_object_id: Joi.string().alphanum().min(1).max(24)
         },
         query: {
-          metaonly: Joi.string().description('Set to true to return only metadata without the list of questions')
+          metaonly: Joi.string().description('Set to true to return only metadata without the list of questions'),
+          include_subdecks_and_slides: Joi.string().description('Set to true to include activities of subdecks and slides')
         }
       },
       tags: ['api'],

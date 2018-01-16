@@ -9,6 +9,9 @@ const boom = require('boom'), //Boom gives us some predefined http codes and pro
   questionDB = require('../database/questionDatabase'), //Database functions specific for questions
   co = require('../common');
 
+const Microservices = require('../configs/microservices');
+const rp = require('request-promise-native');
+
 module.exports = {
 
   //Get all questions from database or return NOT FOUND if the collection is empty
@@ -44,28 +47,76 @@ module.exports = {
 
   //Get all questions from database for a deck/slide or return NOT FOUND
   getRelatedQuestions: function(request, reply) {
+    const related_object = request.params.related_object;
+    const related_object_id = request.params.related_object_id;
+    const include_subdecks_and_slides = request.query.include_subdecks_and_slides;
     const metaonly = request.query.metaonly;
-    if (metaonly === 'true') {
-      return questionDB.getCountOfAllRelated(request.params.related_object,
-        request.params.related_object_id
-      ).then((count) => {
-        reply ({count: count});
-      }).catch((error) => {
-        tryRequestLog(request, 'error', error);
-        reply(boom.badImplementation());
-      });
+    if (include_subdecks_and_slides !== 'true') {
+      if (metaonly === 'true') {
+        return questionDB.getCountOfAllRelated(related_object, related_object_id)
+          .then((count) => {
+            reply ({count: count});
+          }).catch((error) => {
+            tryRequestLog(request, 'error', error);
+            reply(boom.badImplementation());
+          });
+      } else {
+        return questionDB.getAllRelated(related_object, related_object_id)
+          .then((questions) => {
+            questions.forEach((question) => {
+              co.rewriteID(question);
+            });
+
+            let jsonReply = JSON.stringify(questions);
+            reply(jsonReply);
+          }).catch((error) => {
+            request.log('error', error);
+            reply(boom.badImplementation());
+          });
+      }
     } else {
-      return questionDB.getAllRelated(request.params.related_object,
-        request.params.related_object_id
-      ).then((questions) => {
-        questions.forEach((question) => {
-          co.rewriteID(question);
+      return getSubdecksAndSlides(related_object, related_object_id).then((arrayOfDecksAndSlides) => {
+        let slideIdArray = [];
+        let deckIdArray = [];
+
+        arrayOfDecksAndSlides.forEach((deckOrSlide) => {
+          if (deckOrSlide.type === 'slide') {
+            slideIdArray.push(deckOrSlide.id);
+          } else {
+            deckIdArray.push(deckOrSlide.id);
+          }
         });
 
-        let jsonReply = JSON.stringify(questions);
-        reply(jsonReply);
+        if (metaonly === 'true') {
+          return questionDB.getCountAllWithProperties(slideIdArray, deckIdArray)
+            .then((count) => {
+              reply ({count: count});
+            }).catch((error) => {
+              tryRequestLog(request, 'error', error);
+              reply(boom.badImplementation());
+            });
+        } else {
+          return questionDB.getAllWithProperties(slideIdArray, deckIdArray)
+            .then((questions) => {
+              questions.forEach((question) => {
+                co.rewriteID(question);
+
+                //set content_name
+                const slide = arrayOfDecksAndSlides.find((slide) =>  (slide.type === question.related_object && slide.id === question.related_object_id));
+                if (slide) {
+                  question.related_object_name = slide.title;
+                }
+              });
+
+              let jsonReply = JSON.stringify(questions);
+              reply(jsonReply);
+            }).catch((error) => {
+              request.log('error', error);
+              reply(boom.badImplementation());
+            });
+        }
       }).catch((error) => {
-        request.log('error', error);
+        tryRequestLog(request, 'error getSubdecksAndSlides', error);
         reply(boom.badImplementation());
       });
     }
@@ -121,6 +172,52 @@ module.exports = {
   }
 };
 
+
+function getSubdecksAndSlides(content_kind, id) {
+  let myPromise = new Promise((resolve, reject) => {
+    if (content_kind === 'slide') {
+      resolve([{
+        type: content_kind,
+        id: id
+      }]);
+    } else {//if deck => get activities of all its decks and slides
+      let arrayOfSubdecksAndSlides = [];
+      rp.get({uri: Microservices.deck.uri +  '/decktree/' + id}).then((res) => {
+
+        try {
+          let parsed = JSON.parse(res);
+          arrayOfSubdecksAndSlides = getArrayOfChildren(parsed);
+        } catch(e) {
+          console.log(e);
+          resolve(arrayOfSubdecksAndSlides);
+        }
+
+        resolve(arrayOfSubdecksAndSlides);
+      }).catch((err) => {
+        console.log('Error', err);
+
+        resolve(arrayOfSubdecksAndSlides);
+      });
+    }
+  });
+
+  return myPromise;
+}
+
+function getArrayOfChildren(node) {//recursive
+  const idWithoutRevision = node.id.split('-')[0];
+  let array = [{
+    type: node.type,
+    id: idWithoutRevision,
+    title: node.title
+  }];
+  if (node.children) {
+    node.children.forEach((child) => {
+      array = array.concat(getArrayOfChildren(child));
+    });
+  }
+  return array;
+}
 
 //This function tries to use request log and uses console.log if this doesnt work - this is the case in unit tests
 function tryRequestLog(request, message, _object) {

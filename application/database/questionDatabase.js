@@ -54,6 +54,28 @@ module.exports = {
       }));
   },
 
+  getCountAllWithProperties: function(slideIdArray, deckIdArray) {
+    const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
+    const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
+    const query = {$or: [slideIdQuery, deckIdQuery]};
+
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.count(query));
+  },
+
+  getAllWithProperties: function(slideIdArray, deckIdArray) {
+    const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
+    const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
+    const query = {$or: [slideIdQuery, deckIdQuery]};
+
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.find(query))
+      .then((stream) => stream.sort({timestamp: -1}))
+      .then((stream) => stream.toArray());
+  },
+
   insert: function (question) {
     //TODO check for root and parent deck ids to be existent, otherwise create these
     return helper.connectToDatabase()
