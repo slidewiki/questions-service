@@ -13,3 +13,4 @@ questionservice:
     - LETSENCRYPT_HOST=questionservice.experimental.slidewiki.org
     - LETSENCRYPT_EMAIL=pbaptist@uni-bonn.de
     - LETSENCRYPT_TEST=false
+    - SERVICE_URL_DECK=https://deckservice.experimental.slidewiki.org
