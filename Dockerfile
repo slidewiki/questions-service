@@ -1,4 +1,4 @@
-FROM node:6.9-slim
+FROM node:8slim
 MAINTAINER Paul Baptista <pbaptist@uni-bonn.de>
 
 ARG BUILD_ENV=local
