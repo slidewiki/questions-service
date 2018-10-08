@@ -58,6 +58,9 @@ const question = {
       type: 'number',
       minimum: 1,
       maximum: 5
+    },
+    is_exam_question: {
+      type: 'boolean'
     }
   },
   required: ['_id', 'related_object', 'related_object_id', 'question', 'user_id', 'choices']

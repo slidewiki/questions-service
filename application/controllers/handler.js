@@ -50,10 +50,11 @@ module.exports = {
     const related_object = request.params.related_object;
     const related_object_id = request.params.related_object_id;
     const include_subdecks_and_slides = request.query.include_subdecks_and_slides;
+    const exam_questions_only = request.query.exam_questions_only;
     const metaonly = request.query.metaonly;
     if (include_subdecks_and_slides !== 'true') {
       if (metaonly === 'true') {
-        return questionDB.getCountOfAllRelated(related_object, related_object_id)
+        return questionDB.getCountOfAllRelated(related_object, related_object_id, exam_questions_only)
           .then((count) => {
             reply ({count: count});
           }).catch((error) => {
@@ -61,7 +62,7 @@ module.exports = {
             reply(boom.badImplementation());
           });
       } else {
-        return questionDB.getAllRelated(related_object, related_object_id)
+        return questionDB.getAllRelated(related_object, related_object_id, exam_questions_only)
           .then((questions) => {
             questions.forEach((question) => {
               co.rewriteID(question);
@@ -88,7 +89,7 @@ module.exports = {
         });
 
         if (metaonly === 'true') {
-          return questionDB.getCountAllWithProperties(slideIdArray, deckIdArray)
+          return questionDB.getCountAllWithProperties(slideIdArray, deckIdArray, exam_questions_only)
             .then((count) => {
               reply ({count: count});
             }).catch((error) => {
@@ -96,7 +97,7 @@ module.exports = {
               reply(boom.badImplementation());
             });
         } else {
-          return questionDB.getAllWithProperties(slideIdArray, deckIdArray)
+          return questionDB.getAllWithProperties(slideIdArray, deckIdArray, exam_questions_only)
             .then((questions) => {
               questions.forEach((question) => {
                 co.rewriteID(question);

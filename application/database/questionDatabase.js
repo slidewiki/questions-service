@@ -35,39 +35,55 @@ module.exports = {
       .then((stream) => stream.toArray());
   },
 
-  getAllRelated: function (relObject, relObjectId) {
+  getAllRelated: function (relObject, relObjectId, examQuestionsOnly) {
+    let query = (examQuestionsOnly === 'true') ? {
+      related_object: relObject,
+      related_object_id: relObjectId,
+      is_exam_question: true
+    } : {
+      related_object: relObject,
+      related_object_id: relObjectId
+    };
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))
-      .then((col) => col.find({
-        related_object: relObject,
-        related_object_id: relObjectId
-      }))
+      .then((col) => col.find(query))
       .then((stream) => stream.toArray());
   },
 
-  getCountOfAllRelated: function(relObject, relObjectId) {
+  getCountOfAllRelated: function(relObject, relObjectId, examQuestionsOnly) {
+    let query = (examQuestionsOnly === 'true') ? {
+      related_object: relObject,
+      related_object_id: relObjectId,
+      is_exam_question: true
+    } : {
+      related_object: relObject,
+      related_object_id: relObjectId
+    };
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))
-      .then((col) => col.count({
-        related_object: relObject,
-        related_object_id: relObjectId
-      }));
+      .then((col) => col.count(query));
   },
 
-  getCountAllWithProperties: function(slideIdArray, deckIdArray) {
+  getCountAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly) {
     const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
     const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
-    const query = {$or: [slideIdQuery, deckIdQuery]};
+    let query = {$or: [slideIdQuery, deckIdQuery]};
+    if (examQuestionsOnly === 'true') {
+      query = {$and: [query, {is_exam_question: true}]};
+    }
 
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))
       .then((col) => col.count(query));
   },
 
-  getAllWithProperties: function(slideIdArray, deckIdArray) {
+  getAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly) {
     const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
     const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
-    const query = {$or: [slideIdQuery, deckIdQuery]};
+    let query = {$or: [slideIdQuery, deckIdQuery]};
+    if (examQuestionsOnly === 'true') {
+      query = {$and: [query, {is_exam_question: true}]};
+    }
 
     return helper.connectToDatabase()
       .then((db) => db.collection('questions'))

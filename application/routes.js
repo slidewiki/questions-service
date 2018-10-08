@@ -68,6 +68,7 @@ module.exports = function(server) {
           question: Joi.string(),
           user_id: Joi.string().alphanum().min(1).max(24),
           difficulty: Joi.number().integer().min(1).max(5),
+          is_exam_question: Joi.boolean(),
           explanation: Joi.string().allow(''),
           choices: Joi.array().items(choiceSchema).required().min(0).max(4)
         }).requiredKeys('related_object_id', 'question', 'user_id', 'choices'),
@@ -93,6 +94,7 @@ module.exports = function(server) {
           question: Joi.string(),
           user_id: Joi.string().alphanum().min(1).max(24),
           difficulty: Joi.number().integer().min(1).max(5),
+          is_exam_question: Joi.boolean(),
           explanation: Joi.string().allow(''),
           choices: Joi.array().items(choiceSchema).required() .min(0).max(4)
         }).requiredKeys('related_object', 'related_object_id', 'question', 'user_id', 'choices'),
@@ -115,7 +117,8 @@ module.exports = function(server) {
         },
         query: {
           metaonly: Joi.string().description('Set to true to return only metadata without the list of questions'),
-          include_subdecks_and_slides: Joi.string().description('Set to true to include activities of subdecks and slides')
+          include_subdecks_and_slides: Joi.string().description('Set to true to include activities of subdecks and slides'),
+          exam_questions_only: Joi.string().description('Set to true to include only exam questions')
         }
       },
       tags: ['api'],
