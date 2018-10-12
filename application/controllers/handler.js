@@ -154,7 +154,7 @@ module.exports = {
 
   //alter is_exam_question
   updateExamList: function(request, reply) {
-    const modifiedQuestions = request.payload.modifiedQuestions;
+    const modifiedQuestions = request.payload;
     let yesExamQuestions = [];
     let notExamQuestions = [];
     modifiedQuestions.forEach((question) => {
