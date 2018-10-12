@@ -152,6 +152,46 @@ module.exports = {
     });
   },
 
+  //alter is_exam_question
+  updateExamList: function(request, reply) {
+    const modifiedQuestions = request.payload.modifiedQuestions;
+    let yesExamQuestions = [];
+    let notExamQuestions = [];
+    modifiedQuestions.forEach((question) => {
+      if (question.is_exam_question) {
+        yesExamQuestions.push(question.id);
+      } else {
+        notExamQuestions.push(question.id);
+      }
+    });
+    const queryYes = {
+      id: { $in: yesExamQuestions }
+    };
+
+    return questionDB.partlyUpdate(queryYes, {
+      $set: {
+        is_exam_question: true
+      }
+    }, {multi: true} ).then(() => {
+      const queryNot = {
+        id: { $in: notExamQuestions }
+      };
+      return questionDB.partlyUpdate(queryNot, {
+        $set: {
+          is_exam_question: false
+        }
+      }, {multi: true} ).then(() => {
+        reply({'msg': 'is_exam_question params are successfully altered...'});
+      }).catch((error) => {
+        tryRequestLog(request, 'error', error);
+        reply(boom.badImplementation());
+      });
+    }).catch((error) => {
+      tryRequestLog(request, 'error', error);
+      reply(boom.badImplementation());
+    });
+  },
+
   //Delete Question using an id or return INTERNAL_SERVER_ERROR
   deleteQuestion: function(request, reply) {
     questionDB.get(Number(request.params.id)).then((question) => {

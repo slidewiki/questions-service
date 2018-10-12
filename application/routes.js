@@ -35,6 +35,23 @@ module.exports = function(server) {
     }
   });
 
+  //Alter is_exam_question for received ids
+  server.route({
+    method: 'PUT',
+    path: '/questions/updateExamList',
+    handler: handlers.updateExamList,
+    config: {
+      validate: {
+        payload: Joi.array().items(Joi.object().keys({
+          id: Joi.string().description('id of the question to alter is_exam_question'),
+          is_exam_question: Joi.boolean(),
+        }))
+      },
+      tags: ['api'],
+      description: 'Alter is_exam_question params'
+    }
+  });
+
   //Get question with id from database and return it (when not available, return NOT FOUND). Validate id
   server.route({
     method: 'GET',

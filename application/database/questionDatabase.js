@@ -92,6 +92,12 @@ module.exports = {
       .then((stream) => stream.toArray());
   },
 
+  partlyUpdate: (findQuery, updateQuery, params = undefined) => {
+    return helper.connectToDatabase()
+      .then((db) => db.collection('questions'))
+      .then((col) => col.update(findQuery, updateQuery, params));
+  },
+
   insert: function (question) {
     //TODO check for root and parent deck ids to be existent, otherwise create these
     return helper.connectToDatabase()
