@@ -165,7 +165,7 @@ module.exports = {
       }
     });
     const queryYes = {
-      id: { $in: yesExamQuestions }
+      _id: { $in: yesExamQuestions }
     };
 
     return questionDB.partlyUpdate(queryYes, {
@@ -174,7 +174,7 @@ module.exports = {
       }
     }, {multi: true} ).then(() => {
       const queryNot = {
-        id: { $in: notExamQuestions }
+        _id: { $in: notExamQuestions }
       };
       return questionDB.partlyUpdate(queryNot, {
         $set: {
