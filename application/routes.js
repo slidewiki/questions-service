@@ -7,10 +7,10 @@ Each route implementes a basic parameter/payload validation and a swagger API do
 const Joi = require('joi'),
   handlers = require('./controllers/handler');
 
-const DEFAULT_OPTIONS = {
-  abortEarly: false,
-  stripUnknown: { objects: true }
-};
+// const DEFAULT_OPTIONS = {
+//   abortEarly: false,
+//   stripUnknown: { objects: true }
+// };
 
 const choiceSchema =
   Joi.object({
@@ -135,7 +135,8 @@ module.exports = function(server) {
         query: {
           metaonly: Joi.string().description('Set to true to return only metadata without the list of questions'),
           include_subdecks_and_slides: Joi.string().description('Set to true to include activities of subdecks and slides'),
-          exam_questions_only: Joi.string().description('Set to true to include only exam questions')
+          exam_questions_only: Joi.string().description('Set to true to include only exam questions'),
+          non_exam_questions_only: Joi.string().description('Set to true to include only non exam questions')
         }
       },
       tags: ['api'],

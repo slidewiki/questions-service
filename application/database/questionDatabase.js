@@ -35,11 +35,15 @@ module.exports = {
       .then((stream) => stream.toArray());
   },
 
-  getAllRelated: function (relObject, relObjectId, examQuestionsOnly) {
+  getAllRelated: function (relObject, relObjectId, examQuestionsOnly, nonExamQuestionsOnly) {
     let query = (examQuestionsOnly === 'true') ? {
       related_object: relObject,
       related_object_id: relObjectId,
       is_exam_question: true
+    } : (nonExamQuestionsOnly === 'true') ? {
+      related_object: relObject,
+      related_object_id: relObjectId,
+      is_exam_question: { $ne: true}
     } : {
       related_object: relObject,
       related_object_id: relObjectId
@@ -50,11 +54,15 @@ module.exports = {
       .then((stream) => stream.toArray());
   },
 
-  getCountOfAllRelated: function(relObject, relObjectId, examQuestionsOnly) {
+  getCountOfAllRelated: function(relObject, relObjectId, examQuestionsOnly, nonExamQuestionsOnly) {
     let query = (examQuestionsOnly === 'true') ? {
       related_object: relObject,
       related_object_id: relObjectId,
       is_exam_question: true
+    } : (nonExamQuestionsOnly === 'true') ? {
+      related_object: relObject,
+      related_object_id: relObjectId,
+      is_exam_question: { $ne: true}
     } : {
       related_object: relObject,
       related_object_id: relObjectId
@@ -64,12 +72,14 @@ module.exports = {
       .then((col) => col.count(query));
   },
 
-  getCountAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly) {
+  getCountAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly, nonExamQuestionsOnly) {
     const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
     const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
     let query = {$or: [slideIdQuery, deckIdQuery]};
     if (examQuestionsOnly === 'true') {
       query = {$and: [query, {is_exam_question: true}]};
+    } else if (nonExamQuestionsOnly === 'true') {
+      query = {$and: [query, {is_exam_question: { $ne: true}}]};
     }
 
     return helper.connectToDatabase()
@@ -77,12 +87,14 @@ module.exports = {
       .then((col) => col.count(query));
   },
 
-  getAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly) {
+  getAllWithProperties: function(slideIdArray, deckIdArray, examQuestionsOnly, nonExamQuestionsOnly) {
     const slideIdQuery = {$and: [{related_object: 'slide'}, { related_object_id: { $in: slideIdArray } }]};
     const deckIdQuery = {$and: [{related_object: 'deck'}, { related_object_id: { $in: deckIdArray } }]};
     let query = {$or: [slideIdQuery, deckIdQuery]};
     if (examQuestionsOnly === 'true') {
       query = {$and: [query, {is_exam_question: true}]};
+    } else if (nonExamQuestionsOnly === 'true') {
+      query = {$and: [query, {is_exam_question: { $ne: true}}]};
     }
 
     return helper.connectToDatabase()
