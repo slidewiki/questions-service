@@ -160,9 +160,9 @@ module.exports = {
     let notExamQuestions = [];
     modifiedQuestions.forEach((question) => {
       if (question.is_exam_question) {
-        yesExamQuestions.push(Number(question.id));
+        yesExamQuestions.push(question.id);
       } else {
-        notExamQuestions.push(Number(question.id));
+        notExamQuestions.push(question.id);
       }
     });
     const queryYes = {
