@@ -43,7 +43,7 @@ module.exports = function(server) {
     config: {
       validate: {
         payload: Joi.array().items(Joi.object().keys({
-          id: Joi.string().description('id of the question to alter is_exam_question'),
+          id: Joi.number().integer().description('id of the question to alter is_exam_question'),
           is_exam_question: Joi.boolean(),
         }))
       },
